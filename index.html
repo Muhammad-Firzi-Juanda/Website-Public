@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Mesin Turing Untuk Pembagian Bilangan Bulat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1E3A8A;
+            color: white;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input {
+            width: 200px;
+            padding: 5px;
+            margin: 10px;
+            background-color: #3B82F6;
+            border: none;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #2563EB;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1D4ED8;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulasi Mesin Turing Untuk Pembagian Bilangan Bulat</h1>
+        <p>Masukkan dua bilangan bulat untuk dibagi.</p>
+        <form id="form">
+            <input type="number" id="bilangan1" placeholder="Bilangan pertama" required>
+            <input type="number" id="bilangan2" placeholder="Bilangan kedua" required>
+            <button type="button" onclick="prosesPembagian()">Proses Pembagian</button>
+        </form>
+
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function prosesPembagian() {
+            let bilangan1 = parseInt(document.getElementById('bilangan1').value);
+            let bilangan2 = parseInt(document.getElementById('bilangan2').value);
+            let output = document.getElementById('output');
+
+            if (bilangan2 === 0 || isNaN(bilangan1) || isNaN(bilangan2)) {
+                output.innerHTML = 'Error: Pembagian dengan nol atau input tidak valid.';
+                return;
+            }
+
+            let tandaHasil = (bilangan1 < 0 && bilangan2 > 0) || (bilangan1 > 0 && bilangan2 < 0) ? -1 : 1;
+
+            bilangan1 = Math.abs(bilangan1);
+            bilangan2 = Math.abs(bilangan2);
+
+            let hasil = 0;
+            let sisa = bilangan1;
+            let state = 'q0'; 
+
+            while (state !== 'qF') {
+                switch (state) {
+                    case 'q0': 
+                        if (sisa >= bilangan2) {
+                            state = 'q1'; 
+                        } else {
+                            state = 'q4'; 
+                        }
+                        break;
+
+                    case 'q1': 
+                        sisa -= bilangan2;
+                        hasil++;
+                        state = 'q2'; 
+                        break;
+
+                    case 'q2': 
+                        if (sisa >= bilangan2) {
+                            state = 'q1'; 
+                        } else {
+                            state = 'q3'; 
+                        }
+                        break;
+
+                    case 'q3': 
+                        state = 'q4';
+                        break;
+
+                    case 'q4': 
+                        hasil *= tandaHasil; 
+                        state = 'qF'; 
+                        break;
+                }
+            }
+            output.innerHTML = `Hasil pembagian: ${hasil} dengan sisa: ${sisa}`;
+        }
+    </script>
+</body>
+</html>
